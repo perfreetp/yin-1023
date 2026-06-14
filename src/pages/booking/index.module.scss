@@ -1,0 +1,248 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-bottom: 160rpx;
+}
+
+.tabRow {
+  display: flex;
+  background: $color-bg-card;
+  padding: $spacing-sm $spacing-lg;
+  gap: $spacing-md;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.tabItem {
+  flex: 1;
+  text-align: center;
+  padding: $spacing-sm 0;
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  position: relative;
+  transition: all $transition-fast;
+
+  &.active {
+    color: $color-primary;
+    font-weight: $font-weight-semibold;
+  }
+
+  &.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48rpx;
+    height: 6rpx;
+    background: $color-primary;
+    border-radius: 3rpx;
+  }
+
+  .badge {
+    position: absolute;
+    top: 4rpx;
+    right: 16rpx;
+    min-width: 32rpx;
+    height: 32rpx;
+    padding: 0 8rpx;
+    background: $color-error;
+    color: $color-text-white;
+    font-size: 20rpx;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-round;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.content {
+  padding: $spacing-md $page-padding;
+}
+
+.quickActions {
+  display: flex;
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+}
+
+.actionCard {
+  flex: 1;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  transition: all $transition-fast;
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+.actionIcon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  flex-shrink: 0;
+}
+
+.actionText {
+  .title {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: 4rpx;
+  }
+
+  .desc {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+  }
+}
+
+.groupBuySection {
+  margin-bottom: $spacing-lg;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.groupCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+}
+
+.groupTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.groupStatus {
+  font-size: $font-size-xs;
+  padding: 4rpx 16rpx;
+  border-radius: $radius-sm;
+  background: rgba(46, 196, 182, 0.1);
+  color: $color-secondary;
+  font-weight: $font-weight-medium;
+}
+
+.groupInitiator {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacing-md;
+}
+
+.initiatorAvatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: $radius-round;
+  margin-right: $spacing-sm;
+}
+
+.initiatorInfo {
+  .name {
+    font-size: $font-size-sm;
+    color: $color-text-primary;
+    font-weight: $font-weight-medium;
+  }
+  .label {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+  }
+}
+
+.groupMembers {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacing-md;
+}
+
+.memberAvatars {
+  display: flex;
+  margin-right: $spacing-sm;
+}
+
+.memberAvatar {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: $radius-round;
+  border: 3rpx solid $color-bg-card;
+  margin-left: -12rpx;
+
+  &:first-child {
+    margin-left: 0;
+  }
+}
+
+.memberCount {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.groupDeadline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: $spacing-md;
+  border-top: 1rpx solid $color-divider;
+}
+
+.deadlineText {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
+
+.discountText {
+  font-size: $font-size-sm;
+  color: $color-price;
+  font-weight: $font-weight-semibold;
+}
+
+.groupJoinBtn {
+  @include button-reset;
+  height: $button-height-sm;
+  padding: 0 $spacing-xl;
+  border-radius: $radius-button;
+  background: $color-secondary;
+  color: $color-text-white;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+
+  &:active {
+    opacity: 0.9;
+  }
+}
+
+.bookingList {
+  padding-top: $spacing-sm;
+}

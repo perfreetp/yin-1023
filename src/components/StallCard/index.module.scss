@@ -1,0 +1,179 @@
+@use '@/styles/variables.scss' as *;
+
+.stallCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-card;
+  margin-bottom: $spacing-md;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.98);
+    opacity: 0.95;
+  }
+
+  &.closed {
+    opacity: 0.7;
+  }
+}
+
+.coverWrap {
+  position: relative;
+  width: 100%;
+  height: 280rpx;
+}
+
+.coverImage {
+  width: 100%;
+  height: 100%;
+}
+
+.statusTag {
+  position: absolute;
+  top: $spacing-md;
+  left: $spacing-md;
+}
+
+.favoriteBtn {
+  position: absolute;
+  top: $spacing-md;
+  right: $spacing-md;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: $radius-round;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  transition: all $transition-fast;
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.content {
+  padding: $spacing-lg;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-sm;
+}
+
+.name {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  @include text-ellipsis;
+  flex: 1;
+  margin-right: $spacing-sm;
+}
+
+.owner {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacing-md;
+  gap: $spacing-md;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  font-size: $font-size-sm;
+  color: $color-accent;
+  font-weight: $font-weight-semibold;
+}
+
+.star {
+  margin-right: 4rpx;
+}
+
+.reviewCount {
+  color: $color-text-tertiary;
+  font-weight: $font-weight-normal;
+  margin-left: 4rpx;
+}
+
+.distance {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.address {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-bottom: $spacing-md;
+  @include text-ellipsis;
+}
+
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-md;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: $spacing-md;
+  border-top: 1rpx solid $color-divider;
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.statNum {
+  color: $color-primary;
+  font-weight: $font-weight-semibold;
+  margin: 0 4rpx;
+}
+
+.actions {
+  display: flex;
+  gap: $spacing-sm;
+}
+
+.btnMini {
+  @include button-reset;
+  height: $button-height-sm;
+  padding: 0 $spacing-lg;
+  border-radius: $radius-button;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  transition: all $transition-fast;
+
+  &.primary {
+    background: $color-primary;
+    color: $color-text-white;
+
+    &:active {
+      background: $color-primary-dark;
+    }
+  }
+
+  &.ghost {
+    background: $color-bg-tag;
+    color: $color-primary;
+    border: 1rpx solid $color-border;
+
+    &:active {
+      background: $color-bg-hover;
+    }
+  }
+}

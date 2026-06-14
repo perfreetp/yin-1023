@@ -1,0 +1,239 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-bottom: 120rpx;
+}
+
+.heroCard {
+  margin: $spacing-lg $page-padding;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  border-radius: $radius-xl;
+  padding: $spacing-xl;
+  color: $color-text-white;
+  box-shadow: 0 8rpx 32rpx rgba(255, 107, 53, 0.3);
+}
+
+.heroTitle {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-xs;
+}
+
+.heroDesc {
+  font-size: $font-size-sm;
+  opacity: 0.9;
+  margin-bottom: $spacing-lg;
+}
+
+.heroStats {
+  display: flex;
+  gap: $spacing-xl;
+}
+
+.statItem {
+  .statNum {
+    font-size: 40rpx;
+    font-weight: $font-weight-bold;
+  }
+
+  .statLabel {
+    font-size: $font-size-xs;
+    opacity: 0.8;
+    margin-top: 4rpx;
+  }
+}
+
+.content {
+  padding: 0 $page-padding;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.sectionMore {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.quickTake {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.quickTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+}
+
+.stallOptions {
+  display: flex;
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+}
+
+.stallOption {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $spacing-md;
+  border-radius: $radius-md;
+  background: $color-bg-page;
+  border: 2rpx solid transparent;
+  transition: all $transition-fast;
+
+  &.active {
+    background: rgba(255, 107, 53, 0.08);
+    border-color: $color-primary;
+  }
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.stallEmoji {
+  font-size: 48rpx;
+  margin-bottom: $spacing-xs;
+}
+
+.stallOptionName {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  text-align: center;
+  @include text-ellipsis;
+  width: 100%;
+}
+
+.queueBtn {
+  @include button-reset;
+  width: 100%;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  color: $color-text-white;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  box-shadow: 0 4rpx 16rpx rgba(255, 107, 53, 0.3);
+
+  &:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+  }
+
+  &.disabled {
+    background: $color-text-disabled;
+    box-shadow: none;
+    pointer-events: none;
+  }
+}
+
+.noticeCard {
+  background: linear-gradient(135deg, #FFF8E6 0%, #FFF3D6 100%);
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-sm;
+}
+
+.noticeIcon {
+  font-size: 36rpx;
+  flex-shrink: 0;
+}
+
+.noticeContent {
+  flex: 1;
+
+  .noticeTitle {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: #8B6914;
+    margin-bottom: 4rpx;
+  }
+
+  .noticeText {
+    font-size: $font-size-xs;
+    color: #A67C00;
+    line-height: 1.6;
+  }
+}
+
+.myQueueSection {
+  margin-bottom: $spacing-lg;
+}
+
+.changeConfig {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+}
+
+.configTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.configRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm 0;
+}
+
+.configLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.configValue {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+}
+
+.outOfStockList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+  margin-top: $spacing-sm;
+}
+
+.outOfStockItem {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: $spacing-sm $spacing-md;
+  background: rgba(245, 63, 63, 0.08);
+  border-radius: $radius-button;
+  font-size: $font-size-xs;
+  color: $color-error;
+}

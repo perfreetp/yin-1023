@@ -1,0 +1,367 @@
+@import '@/styles/theme.scss';
+
+.page {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+  padding-bottom: 32rpx;
+}
+
+.header {
+  background: linear-gradient(135deg, $color-secondary 0%, $color-secondary-light 100%);
+  padding: 32rpx;
+  color: $color-text-white;
+}
+
+.headerTitle {
+  font-size: 40rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.headerDesc {
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+
+.fabBtn {
+  position: fixed;
+  right: 32rpx;
+  bottom: 160rpx;
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 56rpx;
+  background: linear-gradient(135deg, $color-secondary 0%, $color-secondary-light 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  color: $color-text-white;
+  box-shadow: 0 8rpx 24rpx rgba(46, 196, 182, 0.4);
+  z-index: 100;
+}
+
+.tabs {
+  display: flex;
+  padding: 24rpx 32rpx;
+  gap: 24rpx;
+}
+
+.tab {
+  padding: 16rpx 32rpx;
+  border-radius: 40rpx;
+  background-color: $color-bg-card;
+  font-size: 26rpx;
+  color: $color-text-secondary;
+  border: 2rpx solid $color-border;
+}
+
+.tabActive {
+  background-color: $color-secondary;
+  color: $color-text-white;
+  border-color: $color-secondary;
+}
+
+.section {
+  padding: 0 32rpx;
+  margin-bottom: 24rpx;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.sectionTitle {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: $color-text-primary;
+}
+
+.sectionMore {
+  font-size: 24rpx;
+  color: $color-text-tertiary;
+}
+
+.card {
+  background-color: $color-bg-card;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.stallName {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: $color-text-primary;
+}
+
+.badge {
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+}
+
+.badgeJoining {
+  background-color: rgba(46, 196, 182, 0.1);
+  color: $color-secondary;
+}
+
+.badgeSettled {
+  background-color: rgba(255, 182, 39, 0.1);
+  color: $color-accent;
+}
+
+.initiator {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 2rpx solid $color-divider;
+}
+
+.initiatorAvatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 32rpx;
+  background-color: $color-bg-hover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  margin-right: 16rpx;
+}
+
+.initiatorInfo {
+  flex: 1;
+}
+
+.initiatorName {
+  font-size: 26rpx;
+  color: $color-text-primary;
+  font-weight: 500;
+}
+
+.initiatorTag {
+  display: inline-block;
+  padding: 4rpx 12rpx;
+  background-color: rgba(255, 182, 39, 0.15);
+  color: $color-accent;
+  font-size: 20rpx;
+  border-radius: 12rpx;
+  margin-left: 8rpx;
+}
+
+.deadline {
+  font-size: 22rpx;
+  color: $color-text-tertiary;
+}
+
+.productList {
+  margin-bottom: 20rpx;
+}
+
+.productRow {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 0;
+}
+
+.productImg {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 12rpx;
+  margin-right: 16rpx;
+}
+
+.productInfo {
+  flex: 1;
+}
+
+.productName {
+  font-size: 26rpx;
+  color: $color-text-primary;
+  margin-bottom: 4rpx;
+}
+
+.productPrice {
+  font-size: 24rpx;
+  color: $color-price;
+  font-weight: 500;
+}
+
+.membersRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding: 20rpx;
+  background-color: $color-bg-hover;
+  border-radius: 16rpx;
+}
+
+.memberAvatars {
+  display: flex;
+  margin-right: 16rpx;
+}
+
+.memberAvatar {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 28rpx;
+  border: 4rpx solid $color-bg-card;
+  margin-left: -16rpx;
+  background-color: $color-secondary-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: $color-text-white;
+}
+
+.memberAvatar:first-child {
+  margin-left: 0;
+}
+
+.memberInfo {
+  flex: 1;
+}
+
+.memberText {
+  font-size: 24rpx;
+  color: $color-text-secondary;
+}
+
+.progressBar {
+  height: 8rpx;
+  background-color: $color-border;
+  border-radius: 4rpx;
+  margin-top: 12rpx;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, $color-secondary 0%, $color-secondary-light 100%);
+  border-radius: 4rpx;
+  transition: width 0.3s ease;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 20rpx;
+  border-top: 2rpx solid $color-divider;
+}
+
+.priceInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.totalPrice {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: $color-price;
+}
+
+.discountInfo {
+  font-size: 22rpx;
+  color: $color-secondary;
+}
+
+.joinBtn {
+  padding: 16rpx 40rpx;
+  border-radius: 40rpx;
+  background: linear-gradient(135deg, $color-secondary 0%, $color-secondary-light 100%);
+  color: $color-text-white;
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+.settleBtn {
+  padding: 16rpx 40rpx;
+  border-radius: 40rpx;
+  background: linear-gradient(135deg, $color-accent 0%, $color-accent-light 100%);
+  color: $color-text-white;
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+.myGroupSection {
+  margin-top: 8rpx;
+}
+
+.splitRow {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 2rpx solid $color-divider;
+}
+
+.splitRow:last-child {
+  border-bottom: none;
+}
+
+.splitAvatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 32rpx;
+  background-color: $color-bg-hover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  margin-right: 16rpx;
+}
+
+.splitInfo {
+  flex: 1;
+}
+
+.splitName {
+  font-size: 26rpx;
+  color: $color-text-primary;
+  margin-bottom: 4rpx;
+}
+
+.splitItems {
+  font-size: 22rpx;
+  color: $color-text-tertiary;
+}
+
+.splitShare {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: $color-price;
+}
+
+.emptyState {
+  padding: 80rpx 32rpx;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 80rpx;
+  margin-bottom: 24rpx;
+}
+
+.emptyTitle {
+  font-size: 28rpx;
+  color: $color-text-secondary;
+  margin-bottom: 8rpx;
+}
+
+.emptyDesc {
+  font-size: 24rpx;
+  color: $color-text-tertiary;
+}

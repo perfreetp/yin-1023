@@ -1,0 +1,53 @@
+@use '@/styles/variables.scss' as *;
+
+.tagBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rpx 16rpx;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  white-space: nowrap;
+  line-height: 1.4;
+
+  &.primary {
+    background: rgba(255, 107, 53, 0.1);
+    color: $color-primary;
+  }
+
+  &.secondary {
+    background: rgba(46, 196, 182, 0.1);
+    color: $color-secondary;
+  }
+
+  &.accent {
+    background: rgba(255, 182, 39, 0.15);
+    color: #D48806;
+  }
+
+  &.success {
+    background: rgba(0, 180, 42, 0.1);
+    color: $color-success;
+  }
+
+  &.warning {
+    background: rgba(255, 125, 0, 0.1);
+    color: $color-warning;
+  }
+
+  &.error {
+    background: rgba(245, 63, 63, 0.1);
+    color: $color-error;
+  }
+
+  &.default {
+    background: $color-bg-tag;
+    color: $color-text-secondary;
+  }
+
+  &.outline {
+    background: transparent;
+    border: 1rpx solid currentColor;
+  }
+}

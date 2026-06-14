@@ -1,0 +1,365 @@
+@import '@/styles/theme.scss';
+
+.page {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+}
+
+.mapContainer {
+  width: 100%;
+  height: 500rpx;
+  background: linear-gradient(135deg, #E8F5E9 0%, #FFF8E1 50%, #FFEBEE 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.mapPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.mapIcon {
+  font-size: 120rpx;
+  margin-bottom: 16rpx;
+}
+
+.mapText {
+  font-size: 26rpx;
+  color: $color-text-secondary;
+}
+
+.mapGrid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.3;
+}
+
+.gridLine {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.myLocation {
+  position: absolute;
+  left: 30%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 12rpx;
+  background-color: $color-secondary;
+  border: 4rpx solid #FFFFFF;
+  box-shadow: 0 0 0 8rpx rgba(46, 196, 182, 0.3);
+  z-index: 10;
+}
+
+.myLocation::after {
+  content: '';
+  position: absolute;
+  top: -16rpx;
+  left: -16rpx;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 28rpx;
+  background-color: rgba(46, 196, 182, 0.2);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.3); opacity: 0.3; }
+}
+
+.stallMarker {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -100%);
+  z-index: 5;
+}
+
+.markerPin {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 28rpx 28rpx 28rpx 4rpx;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  color: $color-text-white;
+  transform: rotate(-45deg);
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 53, 0.4);
+}
+
+.markerPin span {
+  transform: rotate(45deg);
+}
+
+.markerLabel {
+  margin-top: 8rpx;
+  padding: 6rpx 12rpx;
+  background-color: $color-bg-card;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  color: $color-text-primary;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
+
+.activeMarker .markerPin {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 36rpx 36rpx 36rpx 4rpx;
+  box-shadow: 0 6rpx 20rpx rgba(255, 107, 53, 0.5);
+}
+
+.activeMarker .markerPin {
+  font-size: 36rpx;
+}
+
+.routeLine {
+  position: absolute;
+  left: 30%;
+  top: 35%;
+  width: 2rpx;
+  height: 120rpx;
+  background: repeating-linear-gradient(
+    to bottom,
+    $color-primary 0,
+    $color-primary 8rpx,
+    transparent 8rpx,
+    transparent 16rpx
+  );
+  transform: rotate(25deg);
+  transform-origin: top left;
+}
+
+.content {
+  padding: 32rpx;
+  margin-top: -40rpx;
+  position: relative;
+  z-index: 20;
+}
+
+.stallCard {
+  background-color: $color-bg-card;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  margin-bottom: 24rpx;
+}
+
+.stallHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.stallCover {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 20rpx;
+  margin-right: 24rpx;
+}
+
+.stallInfo {
+  flex: 1;
+}
+
+.stallName {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: $color-text-primary;
+  margin-bottom: 8rpx;
+}
+
+.stallStatus {
+  display: inline-block;
+  padding: 4rpx 16rpx;
+  border-radius: 16rpx;
+  font-size: 22rpx;
+  margin-right: 12rpx;
+}
+
+.statusOpen {
+  background-color: rgba(0, 180, 42, 0.1);
+  color: $color-success;
+}
+
+.statusClosed {
+  background-color: rgba(245, 63, 63, 0.1);
+  color: $color-error;
+}
+
+.stallRating {
+  font-size: 24rpx;
+  color: $color-text-secondary;
+}
+
+.stallMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+}
+
+.metaTag {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 20rpx;
+  background-color: $color-bg-hover;
+  border-radius: 12rpx;
+  font-size: 24rpx;
+  color: $color-text-secondary;
+}
+
+.metaIcon {
+  margin-right: 8rpx;
+}
+
+.tagsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 28rpx;
+}
+
+.stallTag {
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+}
+
+.tagPrimary {
+  background-color: rgba(255, 182, 39, 0.15);
+  color: $color-accent;
+}
+
+.tagNormal {
+  background-color: $color-bg-tag;
+  color: $color-text-secondary;
+}
+
+.actionRow {
+  display: flex;
+  gap: 20rpx;
+}
+
+.actionBtn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.btnPrimary {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  color: $color-text-white;
+}
+
+.btnSecondary {
+  background-color: $color-bg-hover;
+  color: $color-text-primary;
+  border: 2rpx solid $color-border;
+}
+
+.nearbySection {
+  margin-top: 8rpx;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.sectionTitle {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: $color-text-primary;
+}
+
+.nearbyList {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.nearbyItem {
+  display: flex;
+  align-items: center;
+  background-color: $color-bg-card;
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.nearbyAvatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 16rpx;
+  background-color: $color-bg-hover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  margin-right: 20rpx;
+}
+
+.nearbyInfo {
+  flex: 1;
+}
+
+.nearbyName {
+  font-size: 28rpx;
+  color: $color-text-primary;
+  font-weight: 500;
+  margin-bottom: 6rpx;
+}
+
+.nearbyMeta {
+  font-size: 22rpx;
+  color: $color-text-tertiary;
+}
+
+.nearbyAction {
+  padding: 12rpx 24rpx;
+  border-radius: 24rpx;
+  background-color: rgba(46, 196, 182, 0.1);
+  color: $color-secondary;
+  font-size: 24rpx;
+}
+
+.tipsCard {
+  background: linear-gradient(135deg, #FFF8E1 0%, #FFF3E0 100%);
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-top: 24rpx;
+}
+
+.tipsTitle {
+  font-size: 26rpx;
+  color: $color-accent;
+  font-weight: 500;
+  margin-bottom: 12rpx;
+}
+
+.tipsText {
+  font-size: 24rpx;
+  color: $color-text-secondary;
+  line-height: 1.6;
+}

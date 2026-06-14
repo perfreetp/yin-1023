@@ -1,0 +1,194 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #FFEDE0 0%, $color-bg-page 30%);
+  padding-bottom: 160rpx;
+}
+
+.header {
+  padding: $spacing-lg $page-padding;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  color: $color-text-white;
+  padding-bottom: 48rpx;
+}
+
+.greeting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-lg;
+}
+
+.greetingText {
+  .hello {
+    font-size: $font-size-sm;
+    opacity: 0.9;
+    margin-bottom: 4rpx;
+  }
+
+  .name {
+    font-size: $font-size-xxl;
+    font-weight: $font-weight-bold;
+  }
+}
+
+.vendorBtn {
+  @include button-reset;
+  height: $button-height-sm;
+  padding: 0 $spacing-lg;
+  border-radius: $radius-button;
+  background: rgba(255, 255, 255, 0.2);
+  color: $color-text-white;
+  font-size: $font-size-sm;
+  border: 1rpx solid rgba(255, 255, 255, 0.4);
+
+  &:active {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: $radius-button;
+  padding: 0 $spacing-lg;
+  height: 80rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+}
+
+.searchIcon {
+  font-size: 32rpx;
+  margin-right: $spacing-sm;
+}
+
+.searchInput {
+  flex: 1;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+}
+
+.searchPlaceholder {
+  font-size: $font-size-md;
+  color: $color-text-tertiary;
+}
+
+.content {
+  padding: 0 $page-padding;
+  margin-top: -24rpx;
+}
+
+.categoryRow {
+  display: flex;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg $spacing-md;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+}
+
+.categoryItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all $transition-fast;
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.categoryIcon {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: $radius-lg;
+  background: $color-bg-tag;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  margin-bottom: $spacing-xs;
+}
+
+.categoryText {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: $spacing-lg 0 $spacing-md;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+
+  .highlight {
+    color: $color-primary;
+  }
+}
+
+.sectionMore {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.favScroll {
+  margin-bottom: $spacing-md;
+}
+
+.favContainer {
+  @include scroll-x-container;
+  padding-bottom: $spacing-sm;
+}
+
+.favCard {
+  @include scroll-x-item(260rpx);
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  margin-right: $spacing-md;
+  box-shadow: $shadow-card;
+  transition: all $transition-fast;
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+.favCover {
+  width: 100%;
+  height: 140rpx;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-sm;
+}
+
+.favName {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  @include text-ellipsis;
+  margin-bottom: 4rpx;
+}
+
+.favMeta {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.stallList {
+  padding-top: $spacing-sm;
+}
+
+.emptyHint {
+  padding: $spacing-xl;
+  text-align: center;
+  color: $color-text-tertiary;
+  font-size: $font-size-sm;
+}

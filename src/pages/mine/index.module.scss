@@ -1,0 +1,300 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-bottom: 120rpx;
+}
+
+.profileHeader {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  padding: $spacing-xl $page-padding 80rpx;
+  color: $color-text-white;
+  position: relative;
+}
+
+.profileRow {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: $radius-round;
+  border: 4rpx solid rgba(255, 255, 255, 0.4);
+  margin-right: $spacing-lg;
+  flex-shrink: 0;
+}
+
+.profileInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.userName {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-xs;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.vipBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4rpx 16rpx;
+  background: linear-gradient(90deg, #FFD66B 0%, #FFB627 100%);
+  color: #5C3F00;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  border-radius: $radius-button;
+}
+
+.userDesc {
+  font-size: $font-size-sm;
+  opacity: 0.9;
+  margin-bottom: $spacing-sm;
+}
+
+.tasteRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+}
+
+.tasteTag {
+  padding: 4rpx 16rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: $radius-button;
+  font-size: $font-size-xs;
+}
+
+.statsBar {
+  display: flex;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  margin: -48rpx $page-padding $spacing-lg;
+  padding: $spacing-lg $spacing-md;
+  box-shadow: $shadow-card;
+  position: relative;
+  z-index: 2;
+}
+
+.statItem {
+  flex: 1;
+  text-align: center;
+  position: relative;
+
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 20%;
+    bottom: 20%;
+    width: 1rpx;
+    background: $color-divider;
+  }
+}
+
+.statNum {
+  font-size: 36rpx;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  margin-bottom: 4rpx;
+}
+
+.statLabel {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.section {
+  margin: 0 $page-padding $spacing-lg;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  overflow: hidden;
+}
+
+.sectionTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  padding: $spacing-lg $spacing-lg $spacing-sm;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  padding: $spacing-md $spacing-lg;
+  transition: all $transition-fast;
+
+  &:active {
+    background: $color-bg-hover;
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1rpx solid $color-divider;
+  }
+}
+
+.menuIcon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: $radius-md;
+  background: $color-bg-tag;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  margin-right: $spacing-md;
+  flex-shrink: 0;
+}
+
+.menuContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.menuTitle {
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  margin-bottom: 4rpx;
+}
+
+.menuDesc {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.menuArrow {
+  font-size: 28rpx;
+  color: $color-text-tertiary;
+  margin-left: $spacing-sm;
+}
+
+.menuBadge {
+  margin-right: $spacing-sm;
+  padding: 4rpx 12rpx;
+  background: $color-error;
+  color: $color-text-white;
+  font-size: 20rpx;
+  font-weight: $font-weight-medium;
+  border-radius: $radius-round;
+}
+
+.favStallsSection {
+  padding: 0 $page-padding;
+  margin-bottom: $spacing-lg;
+}
+
+.favHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+}
+
+.favTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.favCount {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.favScroll {
+  margin-bottom: $spacing-sm;
+}
+
+.favContainer {
+  @include scroll-x-container;
+  padding-bottom: $spacing-sm;
+}
+
+.favCard {
+  @include scroll-x-item(220rpx);
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  margin-right: $spacing-md;
+  box-shadow: $shadow-card;
+  transition: all $transition-fast;
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+.favCover {
+  width: 100%;
+  height: 120rpx;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-xs;
+}
+
+.favName {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  @include text-ellipsis;
+}
+
+.favMeta {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.vendorBanner {
+  margin: 0 $page-padding $spacing-lg;
+  background: linear-gradient(135deg, #FFF8E6 0%, #FFE8C2 100%);
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bannerContent {
+  flex: 1;
+}
+
+.bannerTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: #8B5E00;
+  margin-bottom: 4rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.bannerDesc {
+  font-size: $font-size-xs;
+  color: #A67C00;
+}
+
+.bannerBtn {
+  @include button-reset;
+  height: $button-height-sm;
+  padding: 0 $spacing-lg;
+  border-radius: $radius-button;
+  background: linear-gradient(135deg, #FFB627 0%, #FF9500 100%);
+  color: #fff;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  box-shadow: 0 4rpx 12rpx rgba(255, 182, 39, 0.35);
+
+  &:active {
+    opacity: 0.9;
+  }
+}

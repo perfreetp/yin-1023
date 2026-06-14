@@ -1,0 +1,141 @@
+@use '@/styles/variables.scss' as *;
+
+.queueItem {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-lg;
+}
+
+.stallName {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.statusBadge {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  padding: 6rpx 16rpx;
+  border-radius: $radius-sm;
+  white-space: nowrap;
+}
+
+.numberArea {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: linear-gradient(135deg, #FFF8F3 0%, #FFEDE0 100%);
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+}
+
+.numberBox {
+  text-align: center;
+  flex: 1;
+}
+
+.numberLabel {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-xs;
+}
+
+.myNumber {
+  font-size: 64rpx;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+  line-height: 1;
+  font-family: monospace;
+}
+
+.currentNumber {
+  font-size: 48rpx;
+  font-weight: $font-weight-bold;
+  color: $color-secondary;
+  line-height: 1;
+  font-family: monospace;
+}
+
+.arrow {
+  font-size: 48rpx;
+  color: $color-text-tertiary;
+  padding: 0 $spacing-md;
+}
+
+.infoArea {
+  margin-bottom: $spacing-md;
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm 0;
+}
+
+.label {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.value {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+
+  &.highlight {
+    color: $color-primary;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+  }
+
+  &.warning {
+    color: $color-warning;
+  }
+}
+
+.footer {
+  display: flex;
+  gap: $spacing-sm;
+  padding-top: $spacing-md;
+  border-top: 1rpx solid $color-divider;
+}
+
+.btn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-md;
+  border-radius: $radius-button;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  transition: all $transition-fast;
+
+  &.primary {
+    background: $color-primary;
+    color: $color-text-white;
+
+    &:active {
+      background: $color-primary-dark;
+    }
+  }
+
+  &.ghost {
+    background: $color-bg-tag;
+    color: $color-text-secondary;
+    border: 1rpx solid $color-border;
+
+    &:active {
+      background: $color-bg-hover;
+    }
+  }
+}
