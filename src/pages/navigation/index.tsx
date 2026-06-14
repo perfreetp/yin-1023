@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { View, Text, Button, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { mockStalls } from '@/data/stalls';
+import { useAppStore } from '@/store/useAppStore';
 import type { Stall } from '@/types';
 import styles from './index.module.scss';
 
 const NavigationPage: React.FC = () => {
-  const [currentStall, setCurrentStall] = useState<Stall>(mockStalls[0]);
+  const { navigateStallId } = useAppStore();
+  const initialStall = mockStalls.find((s) => s.id === navigateStallId) || mockStalls[0];
+  const [currentStall, setCurrentStall] = useState<Stall>(initialStall);
   const nearbyStalls = mockStalls.filter(
     (s) => s.id !== currentStall.id && currentStall.nearbyStalls?.includes(s.id)
   ).concat(mockStalls.filter((s) => s.id !== currentStall.id && !currentStall.nearbyStalls?.includes(s.id)).slice(0, 2));

@@ -3,8 +3,7 @@ import { View, Text, Button, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import BookingItem from '@/components/BookingItem';
 import EmptyState from '@/components/EmptyState';
-import { mockBookings } from '@/data/bookings';
-import { mockGroupBuys } from '@/data/queue';
+import { useAppStore } from '@/store/useAppStore';
 import type { Booking } from '@/types';
 import styles from './index.module.scss';
 
@@ -19,16 +18,17 @@ const tabs: { key: TabKey; label: string; filter?: Booking['status'][] }[] = [
 ];
 
 const BookingPage: React.FC = () => {
+  const { bookings, groupBuys, cancelBooking } = useAppStore();
   const [activeTab, setActiveTab] = useState<TabKey>('all');
 
   const filteredBookings = useMemo(() => {
     const currentTab = tabs.find((t) => t.key === activeTab);
-    if (!currentTab?.filter) return mockBookings;
-    return mockBookings.filter((b) => currentTab.filter!.includes(b.status));
-  }, [activeTab]);
+    if (!currentTab?.filter) return bookings;
+    return bookings.filter((b) => currentTab.filter!.includes(b.status));
+  }, [activeTab, bookings]);
 
-  const pendingCount = mockBookings.filter((b) => b.status === 'pending').length;
-  const readyCount = mockBookings.filter((b) => b.status === 'ready').length;
+  const pendingCount = bookings.filter((b) => b.status === 'pending').length;
+  const readyCount = bookings.filter((b) => b.status === 'ready').length;
 
   const handleTabClick = (key: TabKey) => {
     setActiveTab(key);
@@ -36,6 +36,11 @@ const BookingPage: React.FC = () => {
 
   const handleReview = (booking: Booking) => {
     Taro.navigateTo({ url: '/pages/review/index' });
+  };
+
+  const handleCancel = (booking: Booking) => {
+    cancelBooking(booking.id);
+    Taro.showToast({ title: '已取消预订', icon: 'none' });
   };
 
   const handleGroupBuy = () => {
@@ -88,10 +93,10 @@ const BookingPage: React.FC = () => {
           </View>
         </View>
 
-        {mockGroupBuys.length > 0 && activeTab === 'all' && (
+        {groupBuys.length > 0 && activeTab === 'all' && (
           <View className={styles.groupBuySection}>
             <Text className={styles.sectionTitle}>🫶 附近拼单中</Text>
-            {mockGroupBuys.map((group) => (
+            {groupBuys.filter((g) => g.status === 'joining').map((group) => (
               <View key={group.id} className={styles.groupCard} onClick={handleGroupBuy}>
                 <View className={styles.groupHeader}>
                   <Text className={styles.groupTitle}>{group.stallName}</Text>
@@ -124,7 +129,7 @@ const BookingPage: React.FC = () => {
                     ))}
                   </View>
                   <Text className={styles.memberCount}>
-                    还差 {group.minMembers - group.members.length} 人成团
+                    还差 {Math.max(0, group.minMembers - group.members.length)} 人成团
                   </Text>
                 </View>
 
@@ -146,6 +151,7 @@ const BookingPage: React.FC = () => {
                 key={booking.id}
                 booking={booking}
                 onReview={handleReview}
+                onCancel={handleCancel}
               />
             ))}
           </View>

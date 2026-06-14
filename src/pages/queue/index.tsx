@@ -3,7 +3,8 @@ import { View, Text, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import QueueItem from '@/components/QueueItem';
 import EmptyState from '@/components/EmptyState';
-import { mockQueue, mockStalls } from '@/data/queue';
+import { useAppStore } from '@/store/useAppStore';
+import { mockStalls } from '@/data/stalls';
 import type { QueueItem as QueueItemType } from '@/types';
 import styles from './index.module.scss';
 
@@ -17,6 +18,7 @@ const quickStalls = [
 const outOfStockOptions = ['换鲜肉大包', '换豆沙包', '改约明天', '直接退款'];
 
 const QueuePage: React.FC = () => {
+  const { queueItems, takeQueueNumber, cancelQueue, setNavigateStallId } = useAppStore();
   const [selectedStall, setSelectedStall] = useState<string | null>(null);
 
   const handleQuickTake = () => {
@@ -24,23 +26,35 @@ const QueuePage: React.FC = () => {
       Taro.showToast({ title: '请先选择摊位', icon: 'none' });
       return;
     }
+    const stall = mockStalls.find((s) => s.id === selectedStall);
+    const stallQueue = queueItems.filter((q) => q.stallId === selectedStall && q.status !== 'cancelled' && q.status !== 'completed');
+    const currentNumber = stallQueue.length > 0 ? Math.max(...stallQueue.map((q) => q.number)) : Math.floor(Math.random() * 20) + 10;
+
     Taro.showLoading({ title: '取号中...' });
     setTimeout(() => {
+      const queueId = takeQueueNumber(selectedStall, stall?.name || '摊位', currentNumber);
       Taro.hideLoading();
-      Taro.showToast({ title: '取号成功！', icon: 'success' });
-    }, 800);
+      const newItem = useAppStore.getState().queueItems.find((q) => q.id === queueId);
+      Taro.showModal({
+        title: '取号成功！',
+        content: `${stall?.name} · 您的号码是 ${String(newItem?.number || 0).padStart(3, '0')}，前方${newItem?.aheadCount || 0}桌`,
+        showCancel: false,
+        confirmText: '知道了'
+      });
+    }, 600);
   };
 
-  const handleNavigate = () => {
+  const handleNavigate = (item: QueueItemType) => {
+    setNavigateStallId(item.stallId);
     Taro.navigateTo({ url: '/pages/navigation/index' });
   };
 
   const handleCancel = (item: QueueItemType) => {
-    console.log('[Queue] 取消排队:', item.id);
+    cancelQueue(item.id);
     Taro.showToast({ title: '已取消排队', icon: 'none' });
   };
 
-  const activeQueue = mockQueue.filter((q) => q.status !== 'completed' && q.status !== 'cancelled');
+  const activeQueue = queueItems.filter((q) => q.status !== 'completed' && q.status !== 'cancelled');
   const openStalls = mockStalls.filter((s) => s.isOpen);
 
   return (

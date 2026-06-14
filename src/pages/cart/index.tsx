@@ -5,13 +5,12 @@ import EmptyState from '@/components/EmptyState';
 import TagBadge from '@/components/TagBadge';
 import { useAppStore } from '@/store/useAppStore';
 import { mockStalls } from '@/data/stalls';
-import { mockProducts } from '@/data/products';
 import styles from './index.module.scss';
 
 const tasteOptions = ['微辣', '少糖', '多加葱', '不要香菜', '多加蒜', '清淡'];
 
 const CartPage: React.FC = () => {
-  const { cart, user, updateCartQuantity, removeFromCart, updateCartItemNote, clearCart } = useAppStore();
+  const { cart, user, vendorProducts, updateCartQuantity, removeFromCart, updateCartItemNote, clearCart, createBooking } = useAppStore();
   const [selectedTastes, setSelectedTastes] = useState<string[]>(user.tastePreferences.slice(0, 2));
 
   const groupedCart = useMemo(() => {
@@ -54,7 +53,7 @@ const CartPage: React.FC = () => {
   };
 
   const handlePlus = (productId: string, quantity: number) => {
-    const product = mockProducts.find((p) => p.id === productId);
+    const product = vendorProducts.find((p) => p.id === productId);
     if (product && quantity >= product.stock) {
       Taro.showToast({ title: '库存不足', icon: 'none' });
       return;
@@ -74,6 +73,12 @@ const CartPage: React.FC = () => {
 
   const handleSubmit = () => {
     if (cart.length === 0) return;
+    const stallGroups: Record<string, CartItem[]> = {};
+    cart.forEach((item) => {
+      if (!stallGroups[item.stallId]) stallGroups[item.stallId] = [];
+      stallGroups[item.stallId].push(item);
+    });
+    const allNotes = selectedTastes.length > 0 ? selectedTastes.join('、') : '';
     Taro.showModal({
       title: '提交预订',
       content: `共 ${totalCount} 件商品，合计 ¥${totalPrice.toFixed(2)}`,
@@ -82,13 +87,21 @@ const CartPage: React.FC = () => {
         if (res.confirm) {
           Taro.showLoading({ title: '提交中...' });
           setTimeout(() => {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const pickupDate = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')} 07:00`;
+            Object.entries(stallGroups).forEach(([stallId, items]) => {
+              const stall = mockStalls.find((s) => s.id === stallId);
+              const stallNote = items.map((i) => i.note).filter(Boolean).join('；');
+              const fullNote = [allNotes, stallNote].filter(Boolean).join('；');
+              createBooking(stallId, stall?.name || '摊位', items, fullNote, pickupDate);
+            });
             Taro.hideLoading();
             Taro.showToast({ title: '预订成功！', icon: 'success' });
-            clearCart();
             setTimeout(() => {
               Taro.switchTab({ url: '/pages/booking/index' });
             }, 1000);
-          }, 800);
+          }, 600);
         }
       }
     });
