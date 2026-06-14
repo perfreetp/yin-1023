@@ -52,6 +52,7 @@ const BookingDetailPage: React.FC = () => {
   const handleNavigate = () => {
     const st = useAppStore.getState();
     st.setNavigateStallId(booking.stallId);
+    st.setNavigationReturnUrl(`/pages/booking-detail/index?id=${booking.id}`);
     Taro.navigateTo({ url: '/pages/navigation/index' });
   };
 
@@ -163,10 +164,16 @@ const BookingDetailPage: React.FC = () => {
               </>
             )}
             {booking.status === 'completed' && (
-              <Button className={styles.btnPrimary} onClick={handleReview}>去评价</Button>
+              <>
+                <Button className={styles.btnGhost} onClick={handleNavigate}>导航到摊</Button>
+                <Button className={styles.btnPrimary} onClick={handleReview}>去评价</Button>
+              </>
             )}
             {booking.status === 'cancelled' && (
-              <Button className={styles.btnGhost} onClick={() => Taro.switchTab({ url: '/pages/stalls/index' })}>重新预订</Button>
+              <>
+                <Button className={styles.btnGhost} onClick={handleNavigate}>导航到摊</Button>
+                <Button className={styles.btnPrimary} onClick={() => Taro.switchTab({ url: '/pages/stalls/index' })}>重新预订</Button>
+              </>
             )}
           </View>
         </View>

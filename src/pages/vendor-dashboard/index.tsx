@@ -5,6 +5,8 @@ import { useAppStore } from '@/store/useAppStore';
 import type { Booking } from '@/types';
 import styles from './index.module.scss';
 
+type DashTab = 'pending' | 'confirmed' | 'ready' | 'completed';
+
 const VendorDashboardPage: React.FC = () => {
   const {
     bookings, vendorProducts, updateBookingStatus,
@@ -17,6 +19,7 @@ const VendorDashboardPage: React.FC = () => {
   const [showClosingSummary, setShowClosingSummary] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showReadyModal, setShowReadyModal] = useState(false);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [estimatedTime, setEstimatedTime] = useState('');
   const [vendorNote, setVendorNote] = useState('');
@@ -25,34 +28,41 @@ const VendorDashboardPage: React.FC = () => {
   const [newProductPrice, setNewProductPrice] = useState('');
   const [newProductStock, setNewProductStock] = useState('');
   const [newProductUnit, setNewProductUnit] = useState('个');
+  const [dashTab, setDashTab] = useState<DashTab>('pending');
 
   const vendorBookings = bookings.filter((b) => b.stallId === VENDOR_STALL_ID);
 
-  const pendingBookings = vendorBookings.filter(
-    (b) => b.status === 'pending' || b.status === 'confirmed'
-  );
-
-  const completedTodayBookings = vendorBookings.filter(
-    (b) => b.status === 'completed'
-  );
+  const pendingList = vendorBookings.filter((b) => b.status === 'pending');
+  const confirmedList = vendorBookings.filter((b) => b.status === 'confirmed');
+  const readyList = vendorBookings.filter((b) => b.status === 'ready');
+  const completedList = vendorBookings.filter((b) => b.status === 'completed');
 
   const stallProducts = vendorProducts.filter((p) => p.stallId === VENDOR_STALL_ID);
 
   const todayRevenue = useMemo(() =>
-    vendorBookings
-      .filter((b) => b.status === 'completed' || b.status === 'ready')
-      .reduce((sum, b) => sum + b.totalPrice, 0),
-    [vendorBookings]
+    completedList.reduce((sum, b) => sum + b.totalPrice, 0),
+    [completedList]
   );
 
-  const todayOrders = vendorBookings.filter(
-    (b) => b.status === 'completed'
-  ).length;
+  const todayOrders = completedList.length;
 
-  const pendingCount = pendingBookings.length;
-  const readyCount = vendorBookings.filter((b) => b.status === 'ready').length;
+  const pendingCount = pendingList.length;
+  const confirmedCount = confirmedList.length;
+  const readyCount = readyList.length;
 
   const quickTimes = ['15分钟', '30分钟', '45分钟', '1小时', '1.5小时'];
+
+  const dashTabs: { key: DashTab; label: string; count: number }[] = [
+    { key: 'pending', label: '待确认', count: pendingCount },
+    { key: 'confirmed', label: '备货中', count: confirmedCount },
+    { key: 'ready', label: '待核销', count: readyCount },
+    { key: 'completed', label: '今日已完成', count: completedList.length },
+  ];
+
+  const currentList = dashTab === 'pending' ? pendingList
+    : dashTab === 'confirmed' ? confirmedList
+    : dashTab === 'ready' ? readyList
+    : completedList;
 
   const openConfirmModal = (booking: Booking) => {
     setSelectedBooking(booking);
@@ -81,14 +91,12 @@ const VendorDashboardPage: React.FC = () => {
 
   const openReadyModal = (booking: Booking) => {
     setSelectedBooking(booking);
-    setVerifyCode('');
     setShowReadyModal(true);
   };
 
   const closeReadyModal = () => {
     setShowReadyModal(false);
     setSelectedBooking(null);
-    setVerifyCode('');
   };
 
   const handleReadySubmit = () => {
@@ -96,6 +104,18 @@ const VendorDashboardPage: React.FC = () => {
     updateBookingStatus(selectedBooking.id, 'ready');
     Taro.showToast({ title: '已通知熟客取货', icon: 'success' });
     closeReadyModal();
+  };
+
+  const openVerifyModal = (booking: Booking) => {
+    setSelectedBooking(booking);
+    setVerifyCode('');
+    setShowVerifyModal(true);
+  };
+
+  const closeVerifyModal = () => {
+    setShowVerifyModal(false);
+    setSelectedBooking(null);
+    setVerifyCode('');
   };
 
   const handleVerify = () => {
@@ -106,14 +126,14 @@ const VendorDashboardPage: React.FC = () => {
     }
     completeBooking(selectedBooking.id);
     Taro.showToast({ title: '核销成功！', icon: 'success' });
-    closeReadyModal();
+    closeVerifyModal();
   };
 
   const handleQuickVerify = () => {
     if (!selectedBooking) return;
     completeBooking(selectedBooking.id);
     Taro.showToast({ title: '核销成功！', icon: 'success' });
-    closeReadyModal();
+    closeVerifyModal();
   };
 
   const actions = [
@@ -129,16 +149,6 @@ const VendorDashboardPage: React.FC = () => {
       title: !isOpen ? '已开摊！祝生意兴隆' : '已收摊，明天见',
       icon: 'none'
     });
-  };
-
-  const handleConfirm = (bookingId: string) => {
-    updateBookingStatus(bookingId, 'confirmed');
-    Taro.showToast({ title: '已确认，开始备货', icon: 'success' });
-  };
-
-  const handleReady = (bookingId: string) => {
-    updateBookingStatus(bookingId, 'ready');
-    Taro.showToast({ title: '已通知熟客取货', icon: 'success' });
   };
 
   const adjustStock = (productId: string, delta: number) => {
@@ -170,6 +180,59 @@ const VendorDashboardPage: React.FC = () => {
 
   const lowStockCount = stallProducts.filter((p) => p.stock / p.maxStock <= 0.3).length;
 
+  const renderBookingRow = (booking: Booking) => {
+    const status = booking.status;
+    return (
+      <View key={booking.id} className={styles.bookingItem}>
+        <View className={styles.customerAvatar}>👤</View>
+        <View className={styles.bookingInfo}>
+          <Text className={styles.customerName}>
+            {booking.products[0].name}等{booking.products.length}件
+            <View className={styles.vipTag}>VIP熟客</View>
+          </Text>
+          <Text className={styles.bookingDetail}>
+            ¥{booking.totalPrice} · {booking.pickupDate}取货
+            {booking.note && ` · ${booking.note}`}
+          </Text>
+          {booking.estimatedReadyTime && (
+            <Text className={styles.bookingDetail}>
+              预计备好：{booking.estimatedReadyTime}
+            </Text>
+          )}
+        </View>
+        <View className={styles.bookingActions}>
+          {status === 'pending' && (
+            <Button
+              className={styles.miniBtn + ` ${styles.primary}`}
+              onClick={() => openConfirmModal(booking)}
+            >
+              确认
+            </Button>
+          )}
+          {status === 'confirmed' && (
+            <Button
+              className={styles.miniBtn + ` ${styles.success}`}
+              onClick={() => openReadyModal(booking)}
+            >
+              备好
+            </Button>
+          )}
+          {status === 'ready' && (
+            <Button
+              className={styles.miniBtn + ` ${styles.accent}`}
+              onClick={() => openVerifyModal(booking)}
+            >
+              核销
+            </Button>
+          )}
+          {status === 'completed' && (
+            <View className={styles.completedTag}>✓ 已核销</View>
+          )}
+        </View>
+      </View>
+    );
+  };
+
   return (
     <View className={styles.page}>
       <View className={styles.statusHeader}>
@@ -191,7 +254,7 @@ const VendorDashboardPage: React.FC = () => {
 
         <View className={styles.statsGrid}>
           <View className={styles.statCard}>
-            <Text className={styles.statNum}>¥{todayRevenue}</Text>
+            <Text className={styles.statNum}>¥{todayRevenue.toFixed(0)}</Text>
             <Text className={styles.statLabel}>今日营收</Text>
           </View>
           <View className={styles.statCard}>
@@ -199,7 +262,7 @@ const VendorDashboardPage: React.FC = () => {
             <Text className={styles.statLabel}>今日订单</Text>
           </View>
           <View className={styles.statCard}>
-            <Text className={styles.statNum}>{pendingCount}</Text>
+            <Text className={styles.statNum}>{pendingCount + confirmedCount + readyCount}</Text>
             <Text className={styles.statLabel}>待处理</Text>
           </View>
           <View className={styles.statCard}>
@@ -219,83 +282,32 @@ const VendorDashboardPage: React.FC = () => {
           ))}
         </View>
 
-        <View className={styles.section}>
-          <View className={styles.sectionHeader}>
-            <Text className={styles.sectionTitle}>📋 待处理预订</Text>
-            <View className={styles.sectionBadge}>{pendingCount} 单</View>
-          </View>
-          {pendingBookings.length > 0 ? pendingBookings.map((booking) => (
-            <View key={booking.id} className={styles.bookingItem}>
-              <View className={styles.customerAvatar}>👤</View>
-              <View className={styles.bookingInfo}>
-                <Text className={styles.customerName}>
-                  {booking.products[0].name}等{booking.products.length}件
-                  <View className={styles.vipTag}>VIP熟客</View>
-                </Text>
-                <Text className={styles.bookingDetail}>
-                  ¥{booking.totalPrice} · {booking.pickupDate}取货
-                  {booking.note && ` · ${booking.note}`}
-                </Text>
-              </View>
-              <View className={styles.bookingActions}>
-                {booking.status === 'pending' && (
-                  <Button
-                    className={styles.miniBtn + ` ${styles.primary}`}
-                    onClick={() => openConfirmModal(booking)}
-                  >
-                    确认
-                  </Button>
-                )}
-                {booking.status === 'confirmed' && (
-                  <Button
-                    className={styles.miniBtn + ` ${styles.success}`}
-                    onClick={() => openReadyModal(booking)}
-                  >
-                    备好
-                  </Button>
-                )}
-                {booking.status === 'ready' && (
-                  <Button
-                    className={styles.miniBtn + ` ${styles.success}`}
-                    onClick={() => openReadyModal(booking)}
-                  >
-                    核销
-                  </Button>
-                )}
-              </View>
+        <View className={styles.dashTabRow}>
+          {dashTabs.map((tab) => (
+            <View
+              key={tab.key}
+              className={styles.dashTab + (dashTab === tab.key ? ` ${styles.dashTabActive}` : '')}
+              onClick={() => setDashTab(tab.key)}
+            >
+              <Text className={styles.dashTabLabel}>{tab.label}</Text>
+              {tab.count > 0 && (
+                <View className={styles.dashTabBadge}>{tab.count}</View>
+              )}
             </View>
-          )) : (
+          ))}
+        </View>
+
+        <View className={styles.section}>
+          {currentList.length > 0 ? (
+            currentList.map(renderBookingRow)
+          ) : (
             <View style={{ padding: '32rpx', textAlign: 'center' }}>
-              <Text style={{ fontSize: '26rpx', color: '#A39E97' }}>✅ 所有预订已处理</Text>
+              <Text style={{ fontSize: '26rpx', color: '#A39E97' }}>
+                {dashTab === 'completed' ? '今天还没有已完成的订单' : '✅ 暂无订单'}
+              </Text>
             </View>
           )}
         </View>
-
-        {completedTodayBookings.length > 0 && (
-          <View className={styles.section}>
-            <View className={styles.sectionHeader}>
-              <Text className={styles.sectionTitle}>✅ 今日已完成</Text>
-              <View className={styles.sectionBadge}>{completedTodayBookings.length} 单</View>
-            </View>
-            {completedTodayBookings.map((booking) => (
-              <View key={booking.id} className={styles.bookingItem}>
-                <View className={styles.customerAvatar}>👤</View>
-                <View className={styles.bookingInfo}>
-                  <Text className={styles.customerName}>
-                    {booking.products[0].name}等{booking.products.length}件
-                  </Text>
-                  <Text className={styles.bookingDetail}>
-                    ¥{booking.totalPrice} · {booking.pickupDate}取货
-                    {booking.completedAt && ` · 完成 ${booking.completedAt.split(' ')[1]}`}
-                  </Text>
-                </View>
-                <View style={{ padding: '8rpx 20rpx', background: 'rgba(0,180,42,0.1)', borderRadius: '20rpx', fontSize: '24rpx', color: '#00B42A' }}>
-                  已完成
-                </View>
-              </View>
-            ))}
-          </View>
-        )}
 
         <View className={styles.section}>
           <View className={styles.sectionHeader}>
@@ -466,18 +478,22 @@ const VendorDashboardPage: React.FC = () => {
               <Text style={{ fontSize: '28rpx', fontWeight: '600', color: '#2D2A26', marginBottom: '16rpx', display: 'block' }}>
                 ⚠️ 未处理事项
               </Text>
-              {pendingCount > 0 ? (
+              {pendingCount > 0 && (
                 <View className={styles.summaryRow}>
-                  <Text className={styles.summaryLabel}>待处理预订</Text>
+                  <Text className={styles.summaryLabel}>待确认预订</Text>
                   <Text className={styles.summaryWarning}>{pendingCount} 单</Text>
                 </View>
-              ) : null}
+              )}
+              {confirmedCount > 0 && (
+                <View className={styles.summaryRow}>
+                  <Text className={styles.summaryLabel}>备货中</Text>
+                  <Text className={styles.summaryWarning}>{confirmedCount} 单</Text>
+                </View>
+              )}
               {readyCount > 0 && (
                 <View className={styles.summaryRow}>
-                  <Text className={styles.summaryLabel}>未取货预订</Text>
-                  <Text className={styles.summaryWarning}>
-                    {readyCount} 单
-                  </Text>
+                  <Text className={styles.summaryLabel}>待取货</Text>
+                  <Text className={styles.summaryWarning}>{readyCount} 单</Text>
                 </View>
               )}
               {lowStockCount > 0 && (
@@ -486,7 +502,7 @@ const VendorDashboardPage: React.FC = () => {
                   <Text className={styles.summaryWarning}>{lowStockCount} 种</Text>
                 </View>
               )}
-              {pendingCount === 0 && readyCount === 0 && lowStockCount === 0 && (
+              {pendingCount === 0 && confirmedCount === 0 && readyCount === 0 && lowStockCount === 0 && (
                 <Text style={{ fontSize: '26rpx', color: '#00B42A', textAlign: 'center', padding: '16rpx' }}>
                   ✅ 今天一切顺利，没有未处理事项
                 </Text>
@@ -562,61 +578,64 @@ const VendorDashboardPage: React.FC = () => {
         <View className={styles.modalOverlay} onClick={closeReadyModal}>
           <View className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <View className={styles.modalHeader}>
-              <Text className={styles.modalTitle}>
-                {selectedBooking.status === 'confirmed' ? '✅ 商品已备好' : '🎫 核销取货码'}
-              </Text>
+              <Text className={styles.modalTitle}>✅ 商品已备好</Text>
               <View className={styles.modalClose} onClick={closeReadyModal}>✕</View>
             </View>
 
-            {selectedBooking.status === 'confirmed' ? (
-              <>
-                <View className={styles.confirmInfo}>
-                  <Text className={styles.confirmCustomer}>
-                    {selectedBooking.products[0].name}等{selectedBooking.products.length}件
-                  </Text>
-                  <Text className={styles.confirmAmount}>
-                    ¥{selectedBooking.totalPrice} · 取货 {selectedBooking.pickupDate}
-                  </Text>
-                </View>
-                <View className={styles.codeBox}>
-                  <Text className={styles.codeLabel}>取货码</Text>
-                  <Text className={styles.codeValue}>{selectedBooking.pickupCode}</Text>
-                </View>
-                <Text className={styles.readyHint}>点击下方按钮，通知熟客前来取货</Text>
-                <Button className={styles.submitBtn} onClick={handleReadySubmit}>
-                  已备好，通知取货
-                </Button>
-              </>
-            ) : (
-              <>
-                <View className={styles.confirmInfo}>
-                  <Text className={styles.confirmCustomer}>
-                    {selectedBooking.products[0].name}等{selectedBooking.products.length}件
-                  </Text>
-                  <Text className={styles.confirmAmount}>
-                    ¥{selectedBooking.totalPrice} · 取货码 {selectedBooking.pickupCode}
-                  </Text>
-                </View>
+            <View className={styles.confirmInfo}>
+              <Text className={styles.confirmCustomer}>
+                {selectedBooking.products[0].name}等{selectedBooking.products.length}件
+              </Text>
+              <Text className={styles.confirmAmount}>
+                ¥{selectedBooking.totalPrice} · 取货 {selectedBooking.pickupDate}
+              </Text>
+            </View>
+            <View className={styles.codeBox}>
+              <Text className={styles.codeLabel}>取货码</Text>
+              <Text className={styles.codeValue}>{selectedBooking.pickupCode}</Text>
+            </View>
+            <Text className={styles.readyHint}>点击下方按钮，通知熟客前来取货</Text>
+            <Button className={styles.submitBtn} onClick={handleReadySubmit}>
+              已备好，通知取货
+            </Button>
+          </View>
+        </View>
+      )}
 
-                <View className={styles.formGroup}>
-                  <Text className={styles.formLabel}>输入取货码核销</Text>
-                  <Input
-                    className={styles.formInput + ` ${styles.codeInput}`}
-                    placeholder="请输入4位取货码"
-                    value={verifyCode}
-                    onInput={(e) => setVerifyCode(e.detail.value)}
-                    maxlength={4}
-                  />
-                </View>
+      {showVerifyModal && selectedBooking && (
+        <View className={styles.modalOverlay} onClick={closeVerifyModal}>
+          <View className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <View className={styles.modalHeader}>
+              <Text className={styles.modalTitle}>🎫 核销取货码</Text>
+              <View className={styles.modalClose} onClick={closeVerifyModal}>✕</View>
+            </View>
 
-                <Button className={styles.submitBtn} onClick={handleVerify}>
-                  核销
-                </Button>
-                <Button className={styles.secondaryBtn} onClick={handleQuickVerify}>
-                  快速核销（免输码）
-                </Button>
-              </>
-            )}
+            <View className={styles.confirmInfo}>
+              <Text className={styles.confirmCustomer}>
+                {selectedBooking.products[0].name}等{selectedBooking.products.length}件
+              </Text>
+              <Text className={styles.confirmAmount}>
+                ¥{selectedBooking.totalPrice} · 取货码 {selectedBooking.pickupCode}
+              </Text>
+            </View>
+
+            <View className={styles.formGroup}>
+              <Text className={styles.formLabel}>输入取货码核销</Text>
+              <Input
+                className={styles.formInput + ` ${styles.codeInput}`}
+                placeholder="请输入4位取货码"
+                value={verifyCode}
+                onInput={(e) => setVerifyCode(e.detail.value)}
+                maxlength={4}
+              />
+            </View>
+
+            <Button className={styles.submitBtn} onClick={handleVerify}>
+              核销
+            </Button>
+            <Button className={styles.secondaryBtn} onClick={handleQuickVerify}>
+              快速核销（免输码）
+            </Button>
           </View>
         </View>
       )}

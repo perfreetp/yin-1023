@@ -598,3 +598,79 @@
   margin-right: 0 !important;
   margin-bottom: 0 !important;
 }
+
+.dashTabRow {
+  display: flex;
+  gap: 0;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+  overflow: hidden;
+}
+
+.dashTab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $spacing-md $spacing-sm;
+  position: relative;
+  transition: all $transition-fast;
+
+  &.dashTabActive {
+    background: rgba(255, 107, 53, 0.08);
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 20%;
+      width: 60%;
+      height: 4rpx;
+      background: $color-primary;
+      border-radius: 2rpx;
+    }
+
+    .dashTabLabel {
+      color: $color-primary;
+      font-weight: $font-weight-semibold;
+    }
+  }
+}
+
+.dashTabLabel {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  margin-bottom: 4rpx;
+}
+
+.dashTabBadge {
+  min-width: 36rpx;
+  height: 36rpx;
+  border-radius: $radius-round;
+  background: $color-primary;
+  color: $color-text-white;
+  font-size: 20rpx;
+  font-weight: $font-weight-bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8rpx;
+}
+
+.miniBtn {
+  &.accent {
+    background: $color-accent;
+    color: $color-text-white;
+  }
+}
+
+.completedTag {
+  padding: 8rpx 20rpx;
+  background: rgba(0, 180, 42, 0.1);
+  border-radius: $radius-button;
+  font-size: $font-size-xs;
+  color: $color-success;
+  font-weight: $font-weight-medium;
+}

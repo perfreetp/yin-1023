@@ -23,8 +23,13 @@ const MinePage: React.FC = () => {
       const st = useAppStore.getState();
       st.setCurrentStall(stall);
       st.setNavigateStallId(stallId);
+      st.setNavigationReturnUrl(null);
       Taro.navigateTo({ url: '/pages/navigation/index' });
     }
+  };
+
+  const handleNavRecord = () => {
+    Taro.navigateTo({ url: '/pages/navigation/index' });
   };
 
   const menuItems = [
@@ -50,7 +55,7 @@ const MinePage: React.FC = () => {
       icon: '📍',
       title: '到摊导航记录',
       desc: '常去摊位一键导航',
-      onClick: () => Taro.navigateTo({ url: '/pages/navigation/index' })
+      onClick: handleNavRecord
     },
     {
       icon: '🔔',

@@ -9,10 +9,22 @@ import styles from './index.module.scss';
 
 const tasteOptions = ['微辣', '少糖', '多加葱', '不要香菜', '多加蒜', '清淡'];
 
+const quickPickupTimes = [
+  '明天 07:00',
+  '明天 08:00',
+  '明天 09:00',
+  '明天 10:00',
+  '明天 11:00',
+  '明天 12:00'
+];
+
 const CartPage: React.FC = () => {
   const { cart, user, vendorProducts, updateCartQuantity, removeFromCart, updateCartItemNote, clearCart, createBooking, setBookingActiveTab } = useAppStore();
   const [selectedTastes, setSelectedTastes] = useState<string[]>(user.tastePreferences.slice(0, 2));
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [stallPickupTimes, setStallPickupTimes] = useState<Record<string, string>>({});
+  const [stallNotes, setStallNotes] = useState<Record<string, string>>({});
+  const [expandedStall, setExpandedStall] = useState<string | null>(null);
 
   const groupedCart = useMemo(() => {
     const groups: Record<string, typeof cart> = {};
@@ -37,6 +49,28 @@ const CartPage: React.FC = () => {
     setSelectedTastes((prev) =>
       prev.includes(taste) ? prev.filter((t) => t !== taste) : [...prev, taste]
     );
+  };
+
+  const getDefaultPickupTime = (stallId: string) => {
+    if (stallPickupTimes[stallId]) return stallPickupTimes[stallId];
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')} 07:00`;
+  };
+
+  const handlePickupTimeSelect = (stallId: string, time: string) => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dateStr = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
+    setStallPickupTimes((prev) => ({ ...prev, [stallId]: `${dateStr} ${time.split(' ')[1] || time}` }));
+  };
+
+  const handleStallNoteChange = (stallId: string, note: string) => {
+    setStallNotes((prev) => ({ ...prev, [stallId]: note }));
+  };
+
+  const toggleStallExpand = (stallId: string) => {
+    setExpandedStall(expandedStall === stallId ? null : stallId);
   };
 
   const handleMinus = (productId: string, quantity: number) => {
@@ -84,7 +118,11 @@ const CartPage: React.FC = () => {
       title: '清空商品篮',
       content: '确定要清空所有商品吗？',
       success: (res) => {
-        if (res.confirm) clearCart();
+        if (res.confirm) {
+          clearCart();
+          setStallPickupTimes({});
+          setStallNotes({});
+        }
       }
     });
   };
@@ -108,7 +146,7 @@ const CartPage: React.FC = () => {
       const allNotes = selectedTastes.length > 0 ? selectedTastes.join('、') : '';
       Taro.showModal({
         title: '提交预订',
-        content: `共 ${totalCount} 件商品，合计 ¥${totalPrice.toFixed(2)}`,
+        content: `共 ${Object.keys(stallGroups).length} 家摊位 ${totalCount} 件商品，合计 ¥${totalPrice.toFixed(2)}`,
         confirmText: '确认预订',
         success: (res) => {
           if (res.confirm) {
@@ -116,13 +154,12 @@ const CartPage: React.FC = () => {
             Taro.showLoading({ title: '提交中...' });
             setTimeout(() => {
               try {
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                const pickupDate = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')} 07:00`;
                 Object.entries(stallGroups).forEach(([stallId, items]) => {
                   const stall = mockStalls.find((s) => s.id === stallId);
-                  const stallNote = items.map((i) => i.note).filter(Boolean).join('；');
-                  const fullNote = [allNotes, stallNote].filter(Boolean).join('；');
+                  const stallItemNotes = items.map((i) => i.note).filter(Boolean).join('；');
+                  const stallCustomNote = stallNotes[stallId] || '';
+                  const fullNote = [allNotes, stallItemNotes, stallCustomNote].filter(Boolean).join('；');
+                  const pickupDate = getDefaultPickupTime(stallId);
                   createBooking(stallId, stall?.name || '摊位', items, fullNote, pickupDate);
                 });
                 const currentCart = useAppStore.getState().cart;
@@ -130,6 +167,8 @@ const CartPage: React.FC = () => {
                   console.warn('[Cart] cart not cleared properly, forcing clear');
                   useAppStore.getState().clearCart();
                 }
+                setStallPickupTimes({});
+                setStallNotes({});
                 setBookingActiveTab('pending');
                 Taro.hideLoading();
                 setIsSubmitting(false);
@@ -193,13 +232,51 @@ const CartPage: React.FC = () => {
 
         {Object.entries(groupedCart).map(([stallId, items]) => {
           const stall = mockStalls.find((s) => s.id === stallId);
+          const stallTotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+          const isExpanded = expandedStall === stallId;
+          const currentPickupTime = getDefaultPickupTime(stallId);
+          const currentTimeShort = currentPickupTime.split(' ')[1] || '07:00';
+
           return (
             <View key={stallId} className={styles.cartItem}>
-              <View className={styles.cartHeader}>
+              <View className={styles.cartHeader} onClick={() => toggleStallExpand(stallId)}>
                 <View className={styles.stallAvatar}>🏪</View>
                 <Text className={styles.stallName}>{stall?.name || '摊位'}</Text>
                 <TagBadge variant="primary">预订</TagBadge>
+                <Text className={styles.stallExpand}>{isExpanded ? '收起 ▲' : '设置 ▼'}</Text>
               </View>
+
+              {isExpanded && (
+                <View className={styles.stallSettings}>
+                  <View className={styles.settingRow}>
+                    <Text className={styles.settingLabel}>⏰ 取货时间</Text>
+                    <View className={styles.timeChips}>
+                      {quickPickupTimes.map((t) => {
+                        const short = t.split(' ')[1];
+                        const isActive = currentTimeShort === short;
+                        return (
+                          <View
+                            key={t}
+                            className={styles.timeChip + (isActive ? ` ${styles.timeChipActive}` : '')}
+                            onClick={() => handlePickupTimeSelect(stallId, t)}
+                          >
+                            {short}
+                          </View>
+                        );
+                      })}
+                    </View>
+                  </View>
+                  <View className={styles.settingRow}>
+                    <Text className={styles.settingLabel}>📝 给摊主留言</Text>
+                    <Input
+                      className={styles.settingInput}
+                      placeholder="如：少放盐、多加辣..."
+                      value={stallNotes[stallId] || ''}
+                      onInput={(e) => handleStallNoteChange(stallId, e.detail.value)}
+                    />
+                  </View>
+                </View>
+              )}
 
               {items.map((item) => (
                 <View key={item.productId} className={styles.productRow}>
@@ -242,6 +319,12 @@ const CartPage: React.FC = () => {
                   </View>
                 </View>
               ))}
+
+              <View className={styles.stallFooter}>
+                <Text className={styles.stallSubtotal}>
+                  小计 ¥{stallTotal.toFixed(2)} · 取货 {currentTimeShort}
+                </Text>
+              </View>
             </View>
           );
         })}
@@ -283,7 +366,7 @@ const CartPage: React.FC = () => {
               <Text className={styles.priceValue}>{totalPrice.toFixed(2)}</Text>
               <Text className={styles.priceUnit}>元</Text>
             </View>
-            <Text className={styles.countInfo}>共 {totalCount} 件商品</Text>
+            <Text className={styles.countInfo}>共 {totalCount} 件商品 · {Object.keys(groupedCart).length} 家摊位</Text>
           </View>
           <Button
             className={styles.submitBtn + ((cart.length === 0 || isSubmitting) ? ` ${styles.disabled}` : '')}

@@ -1,4 +1,4 @@
-@import '@/styles/theme.scss';
+@use '@/styles/variables.scss' as *;
 
 .page {
   min-height: 100vh;
@@ -121,9 +121,6 @@
   height: 72rpx;
   border-radius: 36rpx 36rpx 36rpx 4rpx;
   box-shadow: 0 6rpx 20rpx rgba(255, 107, 53, 0.5);
-}
-
-.activeMarker .markerPin {
   font-size: 36rpx;
 }
 
@@ -277,6 +274,133 @@
   border: 2rpx solid $color-border;
 }
 
+.featureSection {
+  background-color: $color-bg-card;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  margin-bottom: 24rpx;
+}
+
+.featureHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.featureTitle {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: $color-text-primary;
+}
+
+.featureMore {
+  font-size: 26rpx;
+  color: $color-primary;
+}
+
+.productScroll {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.productCard {
+  display: flex;
+  align-items: center;
+  padding: 16rpx;
+  background: $color-bg-page;
+  border-radius: 16rpx;
+}
+
+.productImg {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 12rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.productInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.productName {
+  font-size: 28rpx;
+  color: $color-text-primary;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.productMeta {
+  font-size: 24rpx;
+  color: $color-text-secondary;
+  display: block;
+}
+
+.addBtn {
+  padding: 0 28rpx !important;
+  height: 56rpx !important;
+  line-height: 56rpx !important;
+  border-radius: 28rpx !important;
+  background: linear-gradient(135deg, $color-primary, $color-primary-light) !important;
+  color: $color-text-white !important;
+  font-size: 24rpx !important;
+  margin: 0 !important;
+  flex-shrink: 0;
+}
+
+.queueSection {
+  background-color: $color-bg-card;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  margin-bottom: 24rpx;
+}
+
+.queueInfoCard {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 16rpx;
+  background: $color-bg-page;
+  border-radius: 16rpx;
+}
+
+.queueStat {
+  flex: 1;
+  text-align: center;
+}
+
+.queueStatNum {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: $color-text-primary;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.queueStatLabel {
+  font-size: 22rpx;
+  color: $color-text-tertiary;
+  display: block;
+}
+
+.takeNumberBtn {
+  padding: 0 32rpx !important;
+  height: 72rpx !important;
+  line-height: 72rpx !important;
+  border-radius: 36rpx !important;
+  background: linear-gradient(135deg, $color-secondary, $color-secondary-light) !important;
+  color: $color-text-white !important;
+  font-size: 28rpx !important;
+  margin: 0 !important;
+  flex-shrink: 0;
+}
+
 .nearbySection {
   margin-top: 8rpx;
 }
@@ -313,10 +437,6 @@
   height: 88rpx;
   border-radius: 16rpx;
   background-color: $color-bg-hover;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 40rpx;
   margin-right: 20rpx;
 }
 
@@ -334,6 +454,14 @@
 .nearbyMeta {
   font-size: 22rpx;
   color: $color-text-tertiary;
+  display: block;
+}
+
+.nearbyProducts {
+  font-size: 22rpx;
+  color: $color-primary;
+  display: block;
+  margin-top: 4rpx;
 }
 
 .nearbyAction {
@@ -342,6 +470,31 @@
   background-color: rgba(46, 196, 182, 0.1);
   color: $color-secondary;
   font-size: 24rpx;
+}
+
+.quickActionsBar {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.quickActionBtn {
+  flex: 1;
+  height: 80rpx !important;
+  line-height: 80rpx !important;
+  border-radius: 40rpx !important;
+  background: $color-bg-card !important;
+  color: $color-text-primary !important;
+  font-size: 28rpx !important;
+  font-weight: 500;
+  border: 2rpx solid $color-border !important;
+  margin: 0 !important;
+}
+
+.returnBtn {
+  background: linear-gradient(135deg, $color-primary, $color-primary-light) !important;
+  color: $color-text-white !important;
+  border: none !important;
 }
 
 .tipsCard {

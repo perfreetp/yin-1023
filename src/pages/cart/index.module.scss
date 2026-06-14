@@ -78,6 +78,80 @@
   flex: 1;
 }
 
+.stallExpand {
+  font-size: $font-size-xs;
+  color: $color-primary;
+  margin-left: $spacing-sm;
+}
+
+.stallSettings {
+  background: $color-bg-page;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+}
+
+.settingRow {
+  margin-bottom: $spacing-md;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.settingLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-sm;
+  display: block;
+}
+
+.timeChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.timeChip {
+  padding: 12rpx 24rpx;
+  border-radius: $radius-button;
+  background: $color-bg-card;
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  border: 2rpx solid transparent;
+
+  &.timeChipActive {
+    background: rgba(255, 107, 53, 0.1);
+    color: $color-primary;
+    border-color: $color-primary;
+  }
+}
+
+.settingInput {
+  width: 100%;
+  height: $button-height-sm;
+  padding: 0 $spacing-md;
+  background: $color-bg-card;
+  border-radius: $radius-sm;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  border: 2rpx solid $color-border;
+  box-sizing: border-box;
+}
+
+.stallFooter {
+  padding-top: $spacing-md;
+  border-top: 1rpx solid $color-divider;
+  margin-top: $spacing-sm;
+}
+
+.stallSubtotal {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  text-align: right;
+  display: block;
+}
+
 .preorderTag {
   font-size: $font-size-xs;
   padding: 4rpx 12rpx;

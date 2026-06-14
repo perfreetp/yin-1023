@@ -30,7 +30,8 @@ const QueueItem: React.FC<QueueItemProps> = ({ item, onNavigate, onCancel }) => 
     });
   };
 
-  const isActive = item.status === 'waiting' || item.status === 'calling';
+  const isActive = item.status === 'waiting' || item.status === 'calling' || item.status === 'serving';
+  const showNavigate = item.status !== 'cancelled';
 
   return (
     <View className={styles.queueItem}>
@@ -75,6 +76,13 @@ const QueueItem: React.FC<QueueItemProps> = ({ item, onNavigate, onCancel }) => 
           <Button className={classnames(styles.btn, styles.ghost)} onClick={handleCancel}>
             取消排队
           </Button>
+          <Button className={classnames(styles.btn, styles.primary)} onClick={handleNavigate}>
+            导航到摊
+          </Button>
+        </View>
+      )}
+      {!isActive && showNavigate && (
+        <View className={styles.footer}>
           <Button className={classnames(styles.btn, styles.primary)} onClick={handleNavigate}>
             导航到摊
           </Button>

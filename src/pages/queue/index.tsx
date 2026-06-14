@@ -18,7 +18,7 @@ const quickStalls = [
 const outOfStockOptions = ['换鲜肉大包', '换豆沙包', '改约明天', '直接退款'];
 
 const QueuePage: React.FC = () => {
-  const { queueItems, takeQueueNumber, cancelQueue, setNavigateStallId } = useAppStore();
+  const { queueItems, takeQueueNumber, cancelQueue, setNavigateStallId, setNavigationReturnUrl } = useAppStore();
   const [selectedStall, setSelectedStall] = useState<string | null>(null);
 
   const handleQuickTake = () => {
@@ -46,6 +46,7 @@ const QueuePage: React.FC = () => {
 
   const handleNavigate = (item: QueueItemType) => {
     setNavigateStallId(item.stallId);
+    setNavigationReturnUrl('/pages/queue/index');
     Taro.navigateTo({ url: '/pages/navigation/index' });
   };
 
@@ -54,7 +55,8 @@ const QueuePage: React.FC = () => {
     Taro.showToast({ title: '已取消排队', icon: 'none' });
   };
 
-  const activeQueue = queueItems.filter((q) => q.status !== 'completed' && q.status !== 'cancelled');
+  const activeQueue = queueItems.filter((q) => q.status !== 'cancelled');
+  const historyQueue = queueItems.filter((q) => q.status === 'completed' || q.status === 'serving');
   const openStalls = mockStalls.filter((s) => s.isOpen);
 
   return (
@@ -136,6 +138,22 @@ const QueuePage: React.FC = () => {
             />
           )}
         </View>
+
+        {historyQueue.length > 0 && (
+          <View className={styles.myQueueSection}>
+            <View className={styles.sectionHeader}>
+              <Text className={styles.sectionTitle}>📋 历史记录</Text>
+            </View>
+            {historyQueue.map((item) => (
+              <QueueItem
+                key={item.id}
+                item={item}
+                onNavigate={handleNavigate}
+                onCancel={handleCancel}
+              />
+            ))}
+          </View>
+        )}
 
         <View className={styles.changeConfig}>
           <Text className={styles.configTitle}>🔄 缺货改配</Text>
