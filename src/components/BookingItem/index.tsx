@@ -70,7 +70,7 @@ const BookingItem: React.FC<BookingItemProps> = ({ booking, onReview, onPickup, 
         ))}
       </View>
 
-      {booking.status === 'ready' && (
+      {booking.status !== 'cancelled' && booking.status !== 'completed' && (
         <View className={styles.codeBox}>
           <Text className={styles.codeLabel}>取货码</Text>
           <Text className={styles.codeValue}>{booking.pickupCode}</Text>
@@ -99,7 +99,12 @@ const BookingItem: React.FC<BookingItemProps> = ({ booking, onReview, onPickup, 
               取消预订
             </Button>
           )}
-          {(booking.status === 'confirmed' || booking.status === 'ready') && (
+          {booking.status === 'confirmed' && (
+            <Button className={classnames(styles.btn, styles.primary)} onClick={handlePickup}>
+              出示取货码
+            </Button>
+          )}
+          {booking.status === 'ready' && (
             <Button className={classnames(styles.btn, styles.primary)} onClick={handlePickup}>
               出示取货码
             </Button>

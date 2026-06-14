@@ -20,7 +20,9 @@ const MinePage: React.FC = () => {
   const handleStallClick = (stallId: string) => {
     const stall = mockStalls.find((s) => s.id === stallId);
     if (stall) {
-      useAppStore.getState().setCurrentStall(stall);
+      const st = useAppStore.getState();
+      st.setCurrentStall(stall);
+      st.setNavigateStallId(stallId);
       Taro.navigateTo({ url: '/pages/navigation/index' });
     }
   };

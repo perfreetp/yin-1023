@@ -10,6 +10,7 @@ const VendorDashboardPage: React.FC = () => {
     addVendorProduct, updateVendorProductStock
   } = useAppStore();
 
+  const VENDOR_STALL_ID = 's001';
   const [isOpen, setIsOpen] = useState(true);
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [showClosingSummary, setShowClosingSummary] = useState(false);
@@ -18,24 +19,27 @@ const VendorDashboardPage: React.FC = () => {
   const [newProductStock, setNewProductStock] = useState('');
   const [newProductUnit, setNewProductUnit] = useState('个');
 
-  const pendingBookings = bookings.filter(
+  const vendorBookings = bookings.filter((b) => b.stallId === VENDOR_STALL_ID);
+
+  const pendingBookings = vendorBookings.filter(
     (b) => b.status === 'pending' || b.status === 'confirmed'
   );
 
-  const stallProducts = vendorProducts.filter((p) => p.stallId === 's001');
+  const stallProducts = vendorProducts.filter((p) => p.stallId === VENDOR_STALL_ID);
 
   const todayRevenue = useMemo(() =>
-    bookings
+    vendorBookings
       .filter((b) => b.status === 'completed' || b.status === 'ready')
       .reduce((sum, b) => sum + b.totalPrice, 0),
-    [bookings]
+    [vendorBookings]
   );
 
-  const todayOrders = bookings.filter(
+  const todayOrders = vendorBookings.filter(
     (b) => b.status !== 'cancelled'
   ).length;
 
   const pendingCount = pendingBookings.length;
+  const readyCount = vendorBookings.filter((b) => b.status === 'ready').length;
 
   const actions = [
     { icon: '📝', name: '快速上架', onClick: () => setShowAddProduct(true) },
@@ -328,7 +332,7 @@ const VendorDashboardPage: React.FC = () => {
               </View>
               <View className={styles.summaryRow}>
                 <Text className={styles.summaryLabel}>待取货订单</Text>
-                <Text className={styles.summaryValue}>{bookings.filter((b) => b.status === 'ready').length} 单</Text>
+                <Text className={styles.summaryValue}>{readyCount} 单</Text>
               </View>
             </View>
 
@@ -359,11 +363,11 @@ const VendorDashboardPage: React.FC = () => {
                   <Text className={styles.summaryWarning}>{pendingCount} 单</Text>
                 </View>
               ) : null}
-              {bookings.filter((b) => b.status === 'ready').length > 0 && (
+              {readyCount > 0 && (
                 <View className={styles.summaryRow}>
                   <Text className={styles.summaryLabel}>未取货预订</Text>
                   <Text className={styles.summaryWarning}>
-                    {bookings.filter((b) => b.status === 'ready').length} 单
+                    {readyCount} 单
                   </Text>
                 </View>
               )}
@@ -373,7 +377,7 @@ const VendorDashboardPage: React.FC = () => {
                   <Text className={styles.summaryWarning}>{lowStockCount} 种</Text>
                 </View>
               )}
-              {pendingCount === 0 && bookings.filter((b) => b.status === 'ready').length === 0 && lowStockCount === 0 && (
+              {pendingCount === 0 && readyCount === 0 && lowStockCount === 0 && (
                 <Text style={{ fontSize: '26rpx', color: '#00B42A', textAlign: 'center', padding: '16rpx' }}>
                   ✅ 今天一切顺利，没有未处理事项
                 </Text>

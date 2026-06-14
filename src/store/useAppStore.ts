@@ -18,6 +18,7 @@ interface AppState {
   queueItems: QueueItemType[];
   vendorProducts: Product[];
   navigateStallId: string | null;
+  bookingActiveTab: string | null;
 
   addToCart: (item: CartItem) => void;
   removeFromCart: (productId: string) => void;
@@ -37,6 +38,7 @@ interface AppState {
   takeQueueNumber: (stallId: string, stallName: string, currentNumber: number) => string;
   cancelQueue: (queueId: string) => void;
   setNavigateStallId: (stallId: string | null) => void;
+  setBookingActiveTab: (tab: string | null) => void;
 
   addVendorProduct: (name: string, price: number, stock: number, unit: string) => void;
   updateVendorProductStock: (productId: string, stock: number) => void;
@@ -89,6 +91,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   queueItems: [...mockQueue],
   vendorProducts: [...mockProducts],
   navigateStallId: null,
+  bookingActiveTab: null,
 
   addToCart: (item) => {
     const { cart } = get();
@@ -253,6 +256,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   setNavigateStallId: (stallId) => set({ navigateStallId: stallId }),
+  setBookingActiveTab: (tab) => set({ bookingActiveTab: tab }),
 
   addVendorProduct: (name, price, stock, unit) => {
     const productId = `p${String(++productCounter).padStart(3, '0')}`;

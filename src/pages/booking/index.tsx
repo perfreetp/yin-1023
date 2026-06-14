@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { View, Text, Button, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import BookingItem from '@/components/BookingItem';
@@ -18,8 +18,17 @@ const tabs: { key: TabKey; label: string; filter?: Booking['status'][] }[] = [
 ];
 
 const BookingPage: React.FC = () => {
-  const { bookings, groupBuys, cancelBooking } = useAppStore();
-  const [activeTab, setActiveTab] = useState<TabKey>('all');
+  const { bookings, groupBuys, cancelBooking, bookingActiveTab, setBookingActiveTab } = useAppStore();
+  const [activeTab, setActiveTab] = useState<TabKey>(
+    (bookingActiveTab as TabKey) || 'all'
+  );
+
+  useEffect(() => {
+    if (bookingActiveTab) {
+      setActiveTab(bookingActiveTab as TabKey);
+      setBookingActiveTab(null);
+    }
+  }, [bookingActiveTab, setBookingActiveTab]);
 
   const filteredBookings = useMemo(() => {
     const currentTab = tabs.find((t) => t.key === activeTab);

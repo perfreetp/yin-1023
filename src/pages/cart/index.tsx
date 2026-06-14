@@ -10,7 +10,7 @@ import styles from './index.module.scss';
 const tasteOptions = ['微辣', '少糖', '多加葱', '不要香菜', '多加蒜', '清淡'];
 
 const CartPage: React.FC = () => {
-  const { cart, user, vendorProducts, updateCartQuantity, removeFromCart, updateCartItemNote, clearCart, createBooking } = useAppStore();
+  const { cart, user, vendorProducts, updateCartQuantity, removeFromCart, updateCartItemNote, clearCart, createBooking, setBookingActiveTab } = useAppStore();
   const [selectedTastes, setSelectedTastes] = useState<string[]>(user.tastePreferences.slice(0, 2));
 
   const groupedCart = useMemo(() => {
@@ -73,38 +73,53 @@ const CartPage: React.FC = () => {
 
   const handleSubmit = () => {
     if (cart.length === 0) return;
-    const stallGroups: Record<string, CartItem[]> = {};
-    cart.forEach((item) => {
-      if (!stallGroups[item.stallId]) stallGroups[item.stallId] = [];
-      stallGroups[item.stallId].push(item);
-    });
-    const allNotes = selectedTastes.length > 0 ? selectedTastes.join('、') : '';
-    Taro.showModal({
-      title: '提交预订',
-      content: `共 ${totalCount} 件商品，合计 ¥${totalPrice.toFixed(2)}`,
-      confirmText: '确认预订',
-      success: (res) => {
-        if (res.confirm) {
-          Taro.showLoading({ title: '提交中...' });
-          setTimeout(() => {
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const pickupDate = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')} 07:00`;
-            Object.entries(stallGroups).forEach(([stallId, items]) => {
-              const stall = mockStalls.find((s) => s.id === stallId);
-              const stallNote = items.map((i) => i.note).filter(Boolean).join('；');
-              const fullNote = [allNotes, stallNote].filter(Boolean).join('；');
-              createBooking(stallId, stall?.name || '摊位', items, fullNote, pickupDate);
-            });
-            Taro.hideLoading();
-            Taro.showToast({ title: '预订成功！', icon: 'success' });
+    try {
+      const stallGroups: Record<string, typeof cart> = {};
+      cart.forEach((item) => {
+        if (!stallGroups[item.stallId]) stallGroups[item.stallId] = [];
+        stallGroups[item.stallId].push(item);
+      });
+      const allNotes = selectedTastes.length > 0 ? selectedTastes.join('、') : '';
+      Taro.showModal({
+        title: '提交预订',
+        content: `共 ${totalCount} 件商品，合计 ¥${totalPrice.toFixed(2)}`,
+        confirmText: '确认预订',
+        success: (res) => {
+          if (res.confirm) {
+            Taro.showLoading({ title: '提交中...' });
             setTimeout(() => {
-              Taro.switchTab({ url: '/pages/booking/index' });
-            }, 1000);
-          }, 600);
+              try {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const pickupDate = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')} 07:00`;
+                Object.entries(stallGroups).forEach(([stallId, items]) => {
+                  const stall = mockStalls.find((s) => s.id === stallId);
+                  const stallNote = items.map((i) => i.note).filter(Boolean).join('；');
+                  const fullNote = [allNotes, stallNote].filter(Boolean).join('；');
+                  createBooking(stallId, stall?.name || '摊位', items, fullNote, pickupDate);
+                });
+                setBookingActiveTab('pending');
+                Taro.hideLoading();
+                Taro.showToast({ title: '预订成功！', icon: 'success' });
+                setTimeout(() => {
+                  Taro.switchTab({ url: '/pages/booking/index' });
+                }, 800);
+              } catch (err) {
+                Taro.hideLoading();
+                Taro.showToast({ title: '提交失败，请重试', icon: 'none' });
+                console.error('[Cart] submit error', err);
+              }
+            }, 500);
+          }
+        },
+        fail: () => {
+          Taro.hideLoading();
         }
-      }
-    });
+      });
+    } catch (err) {
+      Taro.showToast({ title: '操作失败，请重试', icon: 'none' });
+      console.error('[Cart] handleSubmit error', err);
+    }
   };
 
   const handleGroupBuy = () => {
