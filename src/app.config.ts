@@ -8,7 +8,8 @@ export default defineAppConfig({
     'pages/vendor-dashboard/index',
     'pages/group-buy/index',
     'pages/navigation/index',
-    'pages/review/index'
+    'pages/review/index',
+    'pages/booking-detail/index'
   ],
   window: {
     backgroundTextStyle: 'light',

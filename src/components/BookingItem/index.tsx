@@ -17,6 +17,10 @@ const BookingItem: React.FC<BookingItemProps> = ({ booking, onReview, onPickup, 
   const statusColor = getStatusColor(booking.status);
   const statusText = getStatusText(booking.status);
 
+  const handleClick = () => {
+    Taro.navigateTo({ url: `/pages/booking-detail/index?id=${booking.id}` });
+  };
+
   const handlePickup = () => {
     Taro.showModal({
       title: '取货码',
@@ -42,7 +46,7 @@ const BookingItem: React.FC<BookingItemProps> = ({ booking, onReview, onPickup, 
   };
 
   return (
-    <View className={styles.bookingItem}>
+    <View className={styles.bookingItem} onClick={handleClick}>
       <View className={styles.header}>
         <View style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
           <Text className={styles.stallName}>{booking.stallName}</Text>

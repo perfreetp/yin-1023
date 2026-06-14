@@ -49,6 +49,9 @@ export interface Booking {
   createdAt: string;
   pickupDate: string;
   note?: string;
+  vendorNote?: string;
+  estimatedReadyTime?: string;
+  completedAt?: string;
   isGroupBuy: boolean;
   groupBuyId?: string;
 }

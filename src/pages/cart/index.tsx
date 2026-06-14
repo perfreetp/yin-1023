@@ -12,6 +12,7 @@ const tasteOptions = ['微辣', '少糖', '多加葱', '不要香菜', '多加�
 const CartPage: React.FC = () => {
   const { cart, user, vendorProducts, updateCartQuantity, removeFromCart, updateCartItemNote, clearCart, createBooking, setBookingActiveTab } = useAppStore();
   const [selectedTastes, setSelectedTastes] = useState<string[]>(user.tastePreferences.slice(0, 2));
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const groupedCart = useMemo(() => {
     const groups: Record<string, typeof cart> = {};
@@ -44,21 +45,38 @@ const CartPage: React.FC = () => {
         title: '确认移除',
         content: '确定要移除这个商品吗？',
         success: (res) => {
-          if (res.confirm) removeFromCart(productId);
+          if (res.confirm) {
+            try {
+              removeFromCart(productId);
+            } catch (err) {
+              console.error('[Cart] remove error', err);
+              Taro.showToast({ title: '操作失败', icon: 'none' });
+            }
+          }
         }
       });
-    } else {
-      updateCartQuantity(productId, quantity - 1);
+    } else if (quantity > 1) {
+      try {
+        updateCartQuantity(productId, quantity - 1);
+      } catch (err) {
+        console.error('[Cart] minus error', err);
+        Taro.showToast({ title: '操作失败', icon: 'none' });
+      }
     }
   };
 
   const handlePlus = (productId: string, quantity: number) => {
-    const product = vendorProducts.find((p) => p.id === productId);
-    if (product && quantity >= product.stock) {
-      Taro.showToast({ title: '库存不足', icon: 'none' });
-      return;
+    try {
+      const product = vendorProducts.find((p) => p.id === productId);
+      if (product && quantity >= product.stock) {
+        Taro.showToast({ title: '库存不足', icon: 'none' });
+        return;
+      }
+      updateCartQuantity(productId, quantity + 1);
+    } catch (err) {
+      console.error('[Cart] plus error', err);
+      Taro.showToast({ title: '操作失败', icon: 'none' });
     }
-    updateCartQuantity(productId, quantity + 1);
   };
 
   const handleClear = () => {
@@ -73,12 +91,20 @@ const CartPage: React.FC = () => {
 
   const handleSubmit = () => {
     if (cart.length === 0) return;
+    if (isSubmitting) {
+      Taro.showToast({ title: '正在提交中...', icon: 'none' });
+      return;
+    }
     try {
       const stallGroups: Record<string, typeof cart> = {};
       cart.forEach((item) => {
         if (!stallGroups[item.stallId]) stallGroups[item.stallId] = [];
         stallGroups[item.stallId].push(item);
       });
+      if (Object.keys(stallGroups).length === 0) {
+        Taro.showToast({ title: '请选择商品', icon: 'none' });
+        return;
+      }
       const allNotes = selectedTastes.length > 0 ? selectedTastes.join('、') : '';
       Taro.showModal({
         title: '提交预订',
@@ -86,6 +112,7 @@ const CartPage: React.FC = () => {
         confirmText: '确认预订',
         success: (res) => {
           if (res.confirm) {
+            setIsSubmitting(true);
             Taro.showLoading({ title: '提交中...' });
             setTimeout(() => {
               try {
@@ -98,14 +125,21 @@ const CartPage: React.FC = () => {
                   const fullNote = [allNotes, stallNote].filter(Boolean).join('；');
                   createBooking(stallId, stall?.name || '摊位', items, fullNote, pickupDate);
                 });
+                const currentCart = useAppStore.getState().cart;
+                if (currentCart.length > 0) {
+                  console.warn('[Cart] cart not cleared properly, forcing clear');
+                  useAppStore.getState().clearCart();
+                }
                 setBookingActiveTab('pending');
                 Taro.hideLoading();
+                setIsSubmitting(false);
                 Taro.showToast({ title: '预订成功！', icon: 'success' });
                 setTimeout(() => {
                   Taro.switchTab({ url: '/pages/booking/index' });
                 }, 800);
               } catch (err) {
                 Taro.hideLoading();
+                setIsSubmitting(false);
                 Taro.showToast({ title: '提交失败，请重试', icon: 'none' });
                 console.error('[Cart] submit error', err);
               }
@@ -114,10 +148,12 @@ const CartPage: React.FC = () => {
         },
         fail: () => {
           Taro.hideLoading();
+          setIsSubmitting(false);
         }
       });
     } catch (err) {
       Taro.showToast({ title: '操作失败，请重试', icon: 'none' });
+      setIsSubmitting(false);
       console.error('[Cart] handleSubmit error', err);
     }
   };
@@ -250,10 +286,11 @@ const CartPage: React.FC = () => {
             <Text className={styles.countInfo}>共 {totalCount} 件商品</Text>
           </View>
           <Button
-            className={styles.submitBtn + (cart.length === 0 ? ` ${styles.disabled}` : '')}
+            className={styles.submitBtn + ((cart.length === 0 || isSubmitting) ? ` ${styles.disabled}` : '')}
             onClick={handleSubmit}
+            disabled={cart.length === 0 || isSubmitting}
           >
-            提交预订
+            {isSubmitting ? '提交中...' : '提交预订'}
           </Button>
         </View>
         <Text className={styles.preorderHint}>预订成功后，摊主会提前为您备好</Text>

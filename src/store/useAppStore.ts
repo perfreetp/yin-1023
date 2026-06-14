@@ -29,8 +29,9 @@ interface AppState {
   setCurrentStall: (stall: Stall | null) => void;
 
   createBooking: (stallId: string, stallName: string, products: CartItem[], note: string, pickupDate: string) => string;
-  updateBookingStatus: (bookingId: string, status: Booking['status']) => void;
+  updateBookingStatus: (bookingId: string, status: Booking['status'], extra?: Partial<Booking>) => void;
   cancelBooking: (bookingId: string) => void;
+  completeBooking: (bookingId: string) => void;
 
   joinGroupBuy: (groupBuyId: string) => void;
   settleGroupBuy: (groupBuyId: string) => void;
@@ -106,11 +107,30 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   removeFromCart: (productId) => {
-    set({ cart: get().cart.filter((i) => i.productId !== productId) });
+    const { cart } = get();
+    const exists = cart.some((i) => i.productId === productId);
+    if (!exists) {
+      console.warn('[Store] removeFromCart: product not found', productId);
+      return;
+    }
+    set({ cart: cart.filter((i) => i.productId !== productId) });
   },
 
   updateCartQuantity: (productId, quantity) => {
+    if (quantity < 0) {
+      console.warn('[Store] updateCartQuantity: invalid quantity', quantity);
+      return;
+    }
     const { cart } = get();
+    const exists = cart.some((i) => i.productId === productId);
+    if (!exists) {
+      console.warn('[Store] updateCartQuantity: product not found', productId);
+      return;
+    }
+    if (quantity === 0) {
+      set({ cart: cart.filter((i) => i.productId !== productId) });
+      return;
+    }
     const newCart = cart.map((item) =>
       item.productId === productId ? { ...item, quantity } : item
     );
@@ -167,11 +187,11 @@ export const useAppStore = create<AppState>((set, get) => ({
     return bookingId;
   },
 
-  updateBookingStatus: (bookingId, status) => {
+  updateBookingStatus: (bookingId, status, extra) => {
     const { bookings } = get();
     set({
       bookings: bookings.map((b) =>
-        b.id === bookingId ? { ...b, status } : b
+        b.id === bookingId ? { ...b, status, ...(extra || {}) } : b
       )
     });
   },
@@ -181,6 +201,17 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({
       bookings: bookings.map((b) =>
         b.id === bookingId ? { ...b, status: 'cancelled' as const } : b
+      )
+    });
+  },
+
+  completeBooking: (bookingId) => {
+    const { bookings } = get();
+    const now = new Date();
+    const completedAt = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    set({
+      bookings: bookings.map((b) =>
+        b.id === bookingId ? { ...b, status: 'completed' as const, completedAt } : b
       )
     });
   },

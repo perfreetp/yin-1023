@@ -493,3 +493,108 @@
   border-radius: $radius-xs;
   margin-left: 8rpx;
 }
+
+.confirmInfo {
+  background: $color-bg-page;
+  border-radius: $radius-sm;
+  padding: 24rpx;
+  margin-bottom: 32rpx;
+}
+
+.confirmCustomer {
+  font-size: 28rpx;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.confirmAmount {
+  font-size: 24rpx;
+  color: $color-text-secondary;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.confirmNote {
+  font-size: 24rpx;
+  color: $color-accent;
+  display: block;
+  margin-top: 8rpx;
+}
+
+.timeChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.timeChip {
+  padding: 16rpx 32rpx;
+  background: $color-bg-page;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  color: $color-text-secondary;
+  border: 2rpx solid transparent;
+
+  &.timeActive {
+    background: rgba(255, 107, 53, 0.1);
+    color: $color-accent;
+    border-color: $color-accent;
+  }
+}
+
+.codeInput {
+  font-size: 48rpx !important;
+  font-weight: $font-weight-bold;
+  text-align: center;
+  letter-spacing: 24rpx;
+  font-family: 'Courier New', monospace;
+  color: $color-accent;
+}
+
+.codeBox {
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.08), rgba(255, 107, 53, 0.03));
+  border: 2rpx dashed rgba(255, 107, 53, 0.3);
+  border-radius: $radius-sm;
+  padding: 32rpx;
+  text-align: center;
+  margin-bottom: 16rpx;
+}
+
+.codeLabel {
+  font-size: 24rpx;
+  color: $color-text-secondary;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.codeValue {
+  font-size: 56rpx;
+  font-weight: $font-weight-bold;
+  color: $color-accent;
+  letter-spacing: 12rpx;
+  font-family: 'Courier New', monospace;
+}
+
+.readyHint {
+  font-size: 24rpx;
+  color: $color-text-secondary;
+  text-align: center;
+  display: block;
+  margin-bottom: 32rpx;
+}
+
+.secondaryBtn {
+  background: #fff !important;
+  border: 2rpx solid $color-border !important;
+  color: $color-text-primary !important;
+  border-radius: 48rpx !important;
+  font-size: 28rpx !important;
+  height: 88rpx !important;
+  line-height: 88rpx !important;
+  margin-top: 16rpx !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-bottom: 0 !important;
+}

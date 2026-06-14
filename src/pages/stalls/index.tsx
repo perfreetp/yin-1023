@@ -49,7 +49,9 @@ const StallsPage: React.FC = () => {
   };
 
   const handleNavigate = (stall: Stall) => {
-    useAppStore.getState().setCurrentStall(stall);
+    const st = useAppStore.getState();
+    st.setCurrentStall(stall);
+    st.setNavigateStallId(stall.id);
     Taro.navigateTo({ url: '/pages/navigation/index' });
   };
 
